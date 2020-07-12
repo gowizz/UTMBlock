@@ -1,7 +1,7 @@
 {
-  "name":"UTM block",
+  "name":"Block Project",
   "version":"1.0.0",
-  "description":"A simple extension that removes UTM tags from the URL",
+  "description":"A simple extension that removes tracking tags from the URL",
   "manifest_version":2,
 
   "icons":{
@@ -10,7 +10,7 @@
     "16":"icon_16.png"
   },
   "author":"Karl-Gustav Kallasmaa",
-  "homepage_url":"https://github.com/gowizz/UTMBlock",
+  "homepage_url":"https://github.com/gowizz/BlockProject",
   "background":{
      "scripts": ["background.js"]
   },

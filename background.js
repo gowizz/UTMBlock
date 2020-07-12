@@ -1,49 +1,33 @@
-
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    //TODO: complete may not be correct. We want to run it before the page is loaded
-    //alert(changeInfo.status)
-    console.log("Status:" + changeInfo.status);
-    console.log("tabId" + tabId);
-    console.log("tab ur" + tab.url);
-    console.log("==============");
-    if (tab.url !== undefined){
-        sendCurrentUrl(tabId, tab)
-    }
-});
- /*
 chrome.webRequest.onBeforeRequest.addListener(
     function(details) {
-        alert("HELLO");
-        return {cancel: details.url.indexOf("://https://www.morningbrew.com/") != -1};
+        return sendCurrentUrl(details);
+    }, {
+        urls: ["<all_urls>"]
     },
-    {urls: ["<all_urls>"]},
     ["blocking"]);
 
-chrome.webRequest.onBeforeSendHeaders.addListener(
-    function(details) {
-        for (var i = 0; i < details.requestHeaders.length; ++i) {
-            if (details.requestHeaders[i].name === 'User-Agent') {
-                details.requestHeaders.splice(i, 1);
-                break;
-            }
-        }
-        return {requestHeaders: details.requestHeaders};
-    },
-    {urls: ["<all_urls>"]},
-    ["blocking", "requestHeaders"]);
-*/
 
-function sendCurrentUrl(tabId, tab) {
-    let tablink = tab.url;
-    let urlParams = getAllUrlParams(tablink);
+function sendCurrentUrl(tab) {
+    let userURL = tab.url;
+    let urlParams = getAllUrlParams(userURL);
     if (urlParams.length < 1) {
         return null;
     }
-    if (url_contains_utm_source(tablink, urlParams) === false) {
+    if (url_contains_utm_source(userURL, urlParams) === false) {
         return null;
     }
 
-    let not_params_url = tablink.split('?')[0];
+    const new_url = getURLwithoutUTM(userURL, urlParams);
+
+    const updateProperties = {
+        "url": new_url.toString()
+    };
+
+    chrome.tabs.update(tab.tabId, updateProperties, function() {});
+}
+
+function getURLwithoutUTM(oldURL, urlParams) {
+    let not_params_url = oldURL.split('?')[0];
 
     const no__UTM_urlParams = Object.keys(urlParams).reduce((object, key) => {
         if (key.substring(0, 4) !== "utm_") {
@@ -54,13 +38,9 @@ function sendCurrentUrl(tabId, tab) {
     let new_url = new URL(not_params_url);
 
     for (let key in no__UTM_urlParams) {
-        let value = no__UTM_urlParams[key];
-        new_url.searchParams.append(key, value);
+        new_url.searchParams.append(key,no__UTM_urlParams[key]);
     }
-
-    let updateProperties = {};
-    updateProperties.url = new_url.toString();
-    chrome.tabs.update(tabId, updateProperties, function() {});
+    return new_url;
 }
 
 function getAllUrlParams(url) {
@@ -106,7 +86,6 @@ function getAllUrlParams(url) {
 
     return obj;
 }
-
 
 function url_contains_utm_source(url, urlParams) {
     const keys = Object.keys(urlParams);

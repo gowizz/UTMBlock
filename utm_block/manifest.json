@@ -15,7 +15,8 @@
      "scripts": ["background.js"]
   },
   "permissions":[
-    "tabs",
-    "webRequest"
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
   ]
 }

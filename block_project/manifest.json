@@ -1,22 +1,25 @@
 {
-  "name":"Block Project",
-  "version":"1.0.0",
-  "description":"A simple extension that removes tracking tags from the URL",
-  "manifest_version":2,
-
+  "manifest_version": 3,
+  "name":"Clean origin",
+  "version": "1.0",
+  "description":"Clean origin is a browser extension that removes all trackers from your url",
   "icons":{
     "128":"icon_128.png",
     "48":"icon_48.png",
     "16":"icon_16.png"
   },
+
   "author":"Karl-Gustav Kallasmaa",
   "homepage_url":"https://github.com/gowizz/BlockProject",
-  "background":{
-     "scripts": ["background.js"]
-  },
-  "permissions":[
-    "webRequest",
-    "webRequestBlocking",
-    "<all_urls>"
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": [
+    "webNavigation",
+    "tabs"
   ]
 }

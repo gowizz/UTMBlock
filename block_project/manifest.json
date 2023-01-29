@@ -10,7 +10,7 @@
   },
 
   "author":"Karl-Gustav Kallasmaa",
-  "homepage_url":"https://github.com/gowizz/BlockProject",
+  "homepage_url":"https://github.com/gowizz/clean-origin",
   
   "content_scripts": [
     {
